@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Net;
 using HotelBooking.Core;
+using HotelBooking.Core.Entities;
 using HotelBooking.Core.Exceptions;
+using HotelBooking.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 

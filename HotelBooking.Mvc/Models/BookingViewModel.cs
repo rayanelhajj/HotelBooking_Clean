@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using HotelBooking.Core;
+using HotelBooking.Core.Entities;
+using HotelBooking.Core.Interfaces;
 
 namespace HotelBooking.Mvc.Models
 {

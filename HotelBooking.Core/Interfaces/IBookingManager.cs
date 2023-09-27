@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
-namespace HotelBooking.Core
+using HotelBooking.Core.Entities;
+namespace HotelBooking.Core.Interfaces
 {
     public interface IBookingManager
     {

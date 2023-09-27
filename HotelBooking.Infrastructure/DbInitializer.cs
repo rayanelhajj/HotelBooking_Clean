@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HotelBooking.Core;
+using HotelBooking.Core.Entities;
 
 namespace HotelBooking.Infrastructure
 {

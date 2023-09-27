@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HotelBooking.Core;
+using HotelBooking.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBooking.Infrastructure.Repositories

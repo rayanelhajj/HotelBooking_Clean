@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using HotelBooking.Core.Entities;
 using HotelBooking.Core.Exceptions;
-
-namespace HotelBooking.Core
+using HotelBooking.Core.Interfaces;
+namespace HotelBooking.Core.Services
 {
     public class BookingManager : IBookingManager
     {

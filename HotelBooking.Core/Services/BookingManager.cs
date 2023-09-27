@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using HotelBooking.Core.Exceptions;
 
 namespace HotelBooking.Core
 {
@@ -36,9 +38,9 @@ namespace HotelBooking.Core
         public int FindAvailableRoom(DateTime startDate, DateTime endDate)
         {
             if (startDate <= DateTime.Today || startDate > endDate)
-                throw new ArgumentException("The start date cannot be in the past or later than the end date.");
+                throw new RestException(HttpStatusCode.BadRequest,"The start date cannot be in the past or later than the end date.");
 
-            var activeBookings = bookingRepository.GetAll().Where(b => b.IsActive);
+            var activeBookings = bookingRepository.GetAll().Where(b => b.IsActive).ToList();
             foreach (var room in roomRepository.GetAll())
             {
                 var activeBookingsForCurrentRoom = activeBookings.Where(b => b.RoomId == room.Id);
@@ -54,11 +56,11 @@ namespace HotelBooking.Core
         public List<DateTime> GetFullyOccupiedDates(DateTime startDate, DateTime endDate)
         {
             if (startDate > endDate)
-                throw new ArgumentException("The start date cannot be later than the end date.");
+                throw new RestException(HttpStatusCode.BadRequest,"The start date cannot be later than the end date.");
 
             List<DateTime> fullyOccupiedDates = new List<DateTime>();
             int noOfRooms = roomRepository.GetAll().Count();
-            var bookings = bookingRepository.GetAll();
+            List<Booking> bookings = bookingRepository.GetAll().ToList();
 
             if (bookings.Any())
             {

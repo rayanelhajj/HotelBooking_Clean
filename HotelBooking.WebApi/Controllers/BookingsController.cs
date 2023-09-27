@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 using HotelBooking.Core;
+using HotelBooking.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -9,10 +12,10 @@ namespace HotelBooking.WebApi.Controllers
     [Route("[controller]")]
     public class BookingsController : Controller
     {
-        private IRepository<Booking> bookingRepository;
+        private readonly IRepository<Booking> bookingRepository;
         private IRepository<Customer> customerRepository;
         private IRepository<Room> roomRepository;
-        private IBookingManager bookingManager;
+        private readonly IBookingManager bookingManager;
 
         public BookingsController(IRepository<Booking> bookingRepos, IRepository<Room> roomRepos,
             IRepository<Customer> customerRepos, IBookingManager manager)
@@ -35,49 +38,39 @@ namespace HotelBooking.WebApi.Controllers
         public IActionResult Get(int id)
         {
             var item = bookingRepository.Get(id);
-            if (item == null)
-            {
-                return NotFound();
+            if (item is null) {
+                throw new RestException(HttpStatusCode.NotFound, $"Booking with ID: {id} not found");
             }
             return new ObjectResult(item);
         }
 
         // POST bookings
         [HttpPost]
-        public IActionResult Post([FromBody]Booking booking)
+        public IActionResult Post([FromBody] [Required] Booking booking)
         {
-            if (booking == null)
-            {
-                return BadRequest();
-            }
-
             bool created = bookingManager.CreateBooking(booking);
 
             if (created)
             {
                 return CreatedAtRoute("GetBookings", null);
             }
-            else
-            {
-                return Conflict("The booking could not be created. All rooms are occupied. Please try another period.");
-            }
-
+            throw new RestException(HttpStatusCode.Conflict, "The booking could not be created. All rooms are occupied. Please try another period.");
         }
 
         // PUT bookings/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Booking booking)
+        [HttpPut("{id:int}")]
+        public IActionResult Put(int id, [FromBody] [Required] Booking booking)
         {
-            if (booking == null || booking.Id != id)
+            if (booking.Id != id)
             {
-                return BadRequest();
+                throw new RestException(HttpStatusCode.BadRequest, "Request Body ID does not match the request URL ID");
             }
 
             var modifiedBooking = bookingRepository.Get(id);
 
             if (modifiedBooking == null)
             {
-                return NotFound();
+                throw new RestException(HttpStatusCode.NotFound, "Booking not found");
             }
 
             // This implementation will only modify the booking's state and customer.
@@ -94,9 +87,9 @@ namespace HotelBooking.WebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (bookingRepository.Get(id) == null)
+            if (bookingRepository.Get(id) is null)
             {
-                return NotFound();
+                throw new RestException(HttpStatusCode.NotFound, "Booking not found");
             }
 
             bookingRepository.Remove(id);

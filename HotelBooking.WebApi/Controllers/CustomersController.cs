@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using HotelBooking.Core;
+﻿using HotelBooking.Core;
+using HotelBooking.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 

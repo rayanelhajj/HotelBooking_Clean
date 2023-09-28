@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using HotelBooking.Core;
+using HotelBooking.Core.Exceptions;
+using HotelBooking.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace HotelBooking.WebApi.Controllers
 {
@@ -29,22 +30,16 @@ namespace HotelBooking.WebApi.Controllers
         public IActionResult Get(int id)
         {
             var item = repository.Get(id);
-            if (item == null)
-            {
-                return NotFound();
+            if (item == null) {
+                throw new RestException(HttpStatusCode.NotFound, "Room not found");
             }
             return new ObjectResult(item);
         }
 
-        // POST roooms
+        // POST rooms
         [HttpPost]
-        public IActionResult Post([FromBody] Room room)
+        public IActionResult Post([FromBody] [Required] Room room)
         {
-            if (room == null)
-            {
-                return BadRequest();
-            }
-
             repository.Add(room);
             return CreatedAtRoute("GetRooms", null);
         }
@@ -54,14 +49,12 @@ namespace HotelBooking.WebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (id > 0)
-            {
-                repository.Remove(id);
-                return NoContent();
+            var room = repository.Get(id);
+            if (room == null) {
+                throw new RestException(HttpStatusCode.NotFound, "Room not found");
             }
-            else {
-                return BadRequest();
-            }
+            repository.Remove(id);
+            return NoContent();
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HotelBooking.Core;
+using HotelBooking.Core.Interfaces;
 using HotelBooking.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -100,7 +101,7 @@ namespace HotelBooking.UnitTests
         {
             // Instruct the fake Remove method to throw an InvalidOperationException, if a room id that
             // does not exist in the repository is passed as a parameter. This behavior corresponds to
-            // the behavior of the real repoository's Remove method.
+            // the behavior of the real repository's Remove method.
             fakeRoomRepository.Setup(x =>
                     x.Remove(It.Is<int>(id => id < 1 || id > 2))).
                     Throws<InvalidOperationException>();

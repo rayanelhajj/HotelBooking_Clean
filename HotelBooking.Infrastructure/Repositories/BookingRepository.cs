@@ -2,6 +2,7 @@
 using System.Linq;
 using HotelBooking.Core;
 using HotelBooking.Core.Entities;
+using HotelBooking.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBooking.Infrastructure.Repositories

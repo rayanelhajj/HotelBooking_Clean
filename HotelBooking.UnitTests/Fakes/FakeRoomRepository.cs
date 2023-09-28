@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using HotelBooking.Core;
+using HotelBooking.Core.Interfaces;
 
 namespace HotelBooking.UnitTests.Fakes
 {

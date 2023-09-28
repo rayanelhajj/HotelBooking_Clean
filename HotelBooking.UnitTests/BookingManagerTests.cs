@@ -1,6 +1,7 @@
 using System;
 using HotelBooking.Core;
 using HotelBooking.Core.Entities;
+using HotelBooking.Core.Exceptions;
 using HotelBooking.Core.Interfaces;
 using HotelBooking.Core.Services;
 using HotelBooking.UnitTests.Fakes;
@@ -18,11 +19,12 @@ namespace HotelBooking.UnitTests
             DateTime end = DateTime.Today.AddDays(20);
             IRepository<Booking> bookingRepository = new FakeBookingRepository(start, end);
             IRepository<Room> roomRepository = new FakeRoomRepository();
-            bookingManager = new BookingManager(bookingRepository, roomRepository);
+            IRepository<Customer> customerRepository = new FakeCustomerRepository();
+            bookingManager = new BookingManager(bookingRepository, roomRepository,customerRepository);
         }
 
         [Fact]
-        public void FindAvailableRoom_StartDateNotInTheFuture_ThrowsArgumentException()
+        public void FindAvailableRoom_StartDateNotInTheFuture_ThrowsRestException()
         {
             // Arrange
             DateTime date = DateTime.Today;
@@ -31,7 +33,7 @@ namespace HotelBooking.UnitTests
             Action act = () => bookingManager.FindAvailableRoom(date, date);
 
             // Assert
-            Assert.Throws<ArgumentException>(act);
+            Assert.Throws<RestException>(act);
         }
 
         [Fact]
@@ -54,7 +56,7 @@ namespace HotelBooking.UnitTests
             // Act
             Action act = () => bookingManager.FindAvailableRoom(startDate, finishDate);
             // Assert
-            Assert.Throws<ArgumentException>(act);
+            Assert.Throws<RestException>(act);
         }
 
         [Fact]

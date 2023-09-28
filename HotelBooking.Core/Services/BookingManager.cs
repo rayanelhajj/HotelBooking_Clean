@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using HotelBooking.Core.BindingModels;
 using HotelBooking.Core.Entities;
 using HotelBooking.Core.Exceptions;
 using HotelBooking.Core.Interfaces;
@@ -9,31 +10,34 @@ namespace HotelBooking.Core.Services
 {
     public class BookingManager : IBookingManager
     {
+        private IRepository<Customer> customerRepository;
         private IRepository<Booking> bookingRepository;
         private IRepository<Room> roomRepository;
 
         // Constructor injection
-        public BookingManager(IRepository<Booking> bookingRepository, IRepository<Room> roomRepository)
+        public BookingManager(IRepository<Booking> bookingRepository, IRepository<Room> roomRepository, IRepository<Customer> customerRepository)
         {
+            this.customerRepository = customerRepository;
             this.bookingRepository = bookingRepository;
             this.roomRepository = roomRepository;
         }
 
-        public bool CreateBooking(Booking booking)
-        {
-            int roomId = FindAvailableRoom(booking.StartDate, booking.EndDate);
+        public bool CreateBooking(BookingPostBindingModel model) {
+            var customer = customerRepository.Get(model.CustomerId);
+            if (customer is null) {
+                throw new RestException(HttpStatusCode.NotFound, "Customer not found");
+            }
+            int roomId = FindAvailableRoom(model.StartDate, model.EndDate);
 
-            if (roomId >= 0)
-            {
-                booking.RoomId = roomId;
-                booking.IsActive = true;
+            if (roomId >= 0) {
+                var booking = new Booking(model) {
+                    RoomId = roomId,
+                    IsActive = true
+                };
                 bookingRepository.Add(booking);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public int FindAvailableRoom(DateTime startDate, DateTime endDate)
@@ -59,7 +63,7 @@ namespace HotelBooking.Core.Services
             if (startDate > endDate)
                 throw new RestException(HttpStatusCode.BadRequest,"The start date cannot be later than the end date.");
 
-            List<DateTime> fullyOccupiedDates = new List<DateTime>();
+            List<DateTime> fullyOccupiedDates = new();
             int noOfRooms = roomRepository.GetAll().Count();
             List<Booking> bookings = bookingRepository.GetAll().ToList();
 

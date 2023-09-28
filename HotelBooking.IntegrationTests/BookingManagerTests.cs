@@ -37,7 +37,8 @@ namespace HotelBooking.IntegrationTests
             // Create repositories and BookingManager
             var bookingRepos = new BookingRepository(dbContext);
             var roomRepos = new RoomRepository(dbContext);
-            bookingManager = new BookingManager(bookingRepos, roomRepos);
+            var customerRepos = new CustomerRepository(dbContext);
+            bookingManager = new BookingManager(bookingRepos, roomRepos, customerRepos);
         }
 
         public void Dispose()

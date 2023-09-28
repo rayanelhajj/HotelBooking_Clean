@@ -1,4 +1,5 @@
 ﻿using HotelBooking.Core;
+using HotelBooking.Core.Entities;
 using HotelBooking.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

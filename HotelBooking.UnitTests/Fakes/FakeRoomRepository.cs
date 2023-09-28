@@ -31,8 +31,7 @@ namespace HotelBooking.UnitTests.Fakes
 
         public IEnumerable<Room> GetAll()
         {
-            List<Room> rooms = new List<Room>
-            {
+            List<Room> rooms = new() {
                 new Room { Id=1, Description="A" },
                 new Room { Id=2, Description="B" },
             };

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net;
 using HotelBooking.Core;
+using HotelBooking.Core.BindingModels;
 using HotelBooking.Core.Entities;
 using HotelBooking.Core.Exceptions;
 using HotelBooking.Core.Interfaces;
@@ -47,7 +48,7 @@ namespace HotelBooking.WebApi.Controllers
 
         // POST bookings
         [HttpPost]
-        public IActionResult Post([FromBody] [Required] Booking booking)
+        public IActionResult Post([FromBody] [Required] BookingPostBindingModel booking)
         {
             bool created = bookingManager.CreateBooking(booking);
 
@@ -60,7 +61,7 @@ namespace HotelBooking.WebApi.Controllers
 
         // PUT bookings/5
         [HttpPut("{id:int}")]
-        public IActionResult Put(int id, [FromBody] [Required] Booking booking)
+        public IActionResult Put(int id, [FromBody] [Required] BookingPutBindingModel booking)
         {
             if (booking.Id != id)
             {
@@ -73,12 +74,18 @@ namespace HotelBooking.WebApi.Controllers
             {
                 throw new RestException(HttpStatusCode.NotFound, "Booking not found");
             }
+            if (booking.CustomerId is not null) {
+                var customer = customerRepository.Get((int)booking.CustomerId);
+                if (customer is null) {
+                    throw new RestException(HttpStatusCode.NotFound, "Customer not found");
+                }
+            }
 
             // This implementation will only modify the booking's state and customer.
             // It is not safe to directly modify StartDate, EndDate and Room, because
             // it could conflict with other active bookings.
-            modifiedBooking.IsActive = booking.IsActive;
-            modifiedBooking.CustomerId = booking.CustomerId;
+            modifiedBooking.IsActive = booking.IsActive ?? modifiedBooking.IsActive;
+            modifiedBooking.CustomerId = booking.CustomerId ?? modifiedBooking.CustomerId;
 
             bookingRepository.Edit(modifiedBooking);
             return NoContent();

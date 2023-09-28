@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HotelBooking.Core;
+using HotelBooking.Core.Exceptions;
 using HotelBooking.Core.Interfaces;
 using HotelBooking.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -87,12 +88,13 @@ namespace HotelBooking.UnitTests
         }
 
         [Fact]
-        public void Delete_WhenIdIsLessThanOne_RemoveIsNotCalled()
+        public void Delete_WhenIdIsLessThanOne_ThrowsRestException()
         {
             // Act
-            controller.Delete(0);
+            Action act = () =>controller.Delete(0);
 
             // Assert against the mock object
+            Assert.Throws<RestException>(act);
             fakeRoomRepository.Verify(x => x.Remove(It.IsAny<int>()), Times.Never());
         }
 
@@ -107,7 +109,7 @@ namespace HotelBooking.UnitTests
                     Throws<InvalidOperationException>();
 
             // Assert
-            Assert.Throws<InvalidOperationException>(() => controller.Delete(3));
+            Assert.Throws<RestException>(() => controller.Delete(3));
 
             // Assert against the mock object
             fakeRoomRepository.Verify(x => x.Remove(It.IsAny<int>()));

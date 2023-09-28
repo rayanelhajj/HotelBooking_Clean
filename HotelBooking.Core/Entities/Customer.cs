@@ -1,4 +1,4 @@
-﻿namespace HotelBooking.Core
+﻿namespace HotelBooking.Core.Entities
 {
     public class Customer
     {

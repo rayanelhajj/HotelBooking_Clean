@@ -112,7 +112,7 @@ namespace HotelBooking.UnitTests
             Assert.Throws<RestException>(() => controller.Delete(3));
 
             // Assert against the mock object
-            fakeRoomRepository.Verify(x => x.Remove(It.IsAny<int>()));
+            fakeRoomRepository.Verify(x => x.Remove(It.IsAny<int>())); //TODO: This test doesn't work and I'm not exactly sure why
         }
     }
 }

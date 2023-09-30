@@ -26,9 +26,8 @@ namespace HotelBooking.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Customer Get(int id)
-        {
-            throw new NotImplementedException();
+        public Customer Get(int id) {
+            return db.Customer.FirstOrDefault(c => c.Id == id);
         }
 
         public IEnumerable<Customer> GetAll()

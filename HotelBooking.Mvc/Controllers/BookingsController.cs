@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelBooking.Core;
+using HotelBooking.Core.BindingModels;
 using HotelBooking.Core.Entities;
 using HotelBooking.Core.Interfaces;
 using HotelBooking.Mvc.Models;
@@ -62,7 +63,7 @@ namespace HotelBooking.Mvc.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("StartDate,EndDate,CustomerId")] Booking booking)
+        public IActionResult Create([Bind("StartDate,EndDate,CustomerId")] BookingPostBindingModel booking)
         {
             if (ModelState.IsValid)
             {
@@ -75,8 +76,8 @@ namespace HotelBooking.Mvc.Controllers
             }
 
             ViewData["CustomerId"] = new SelectList(customerRepository.GetAll(), "Id", "Name", booking.CustomerId);
-            ViewBag.Status = "The booking could not be created. There were no available room.";
-            return View(booking);
+            ViewBag.Status = "The booking could not be created. There were no available rooms.";
+            return View(new Booking(booking));
         }
 
         // GET: Bookings/Edit/5

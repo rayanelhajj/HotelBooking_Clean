@@ -1,13 +1,15 @@
-﻿using HotelBooking.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using HotelBooking.Core;
+using HotelBooking.Core.Entities;
+using HotelBooking.Core.Interfaces;
 
 namespace HotelBooking.UnitTests.Fakes
 {
     public class FakeBookingRepository : IRepository<Booking>
     {
-        private DateTime fullyOccupiedStartDate;
-        private DateTime fullyOccupiedEndDate;
+        private DateTime fullyOccupiedStartDate = DateTime.Today.AddDays(10);
+        private DateTime fullyOccupiedEndDate = DateTime.Today.AddDays(20);
 
         public FakeBookingRepository(DateTime start, DateTime end)
         {
